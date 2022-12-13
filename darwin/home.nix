@@ -35,9 +35,7 @@
         custom = "$HOME/.config/zsh_nix/custom";
       };
 
-      initExtra = "source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
-      && autoload -U promptinit; promptinit
-      && pfetch";
+      initExtra = "source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup && autoload -U promptinit; promptinit && pfetch";
     };
     neovim = {
       enable = true;
