@@ -88,7 +88,6 @@
       "wireguard-tools"
     ];
     casks = [
-      "parsec"
     ];
   };
 
