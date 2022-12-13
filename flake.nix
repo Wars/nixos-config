@@ -5,7 +5,7 @@
 #  I refer to the README and other org document on how to use these files.
 #  Currently and possibly forever a Work In Progress.
 #
-#  flake.nix *             
+#  flake.nix *
 #   ├─ ./hosts
 #   │   └─ default.nix
 #   ├─ ./darwin
@@ -59,7 +59,7 @@
 
   outputs = inputs @ { self, nixpkgs, home-manager, darwin, nur, nixgl, doom-emacs, hyprland, ... }:   # Function that tells my flake which to use and what do what to do with the dependencies.
     let                                                                     # Variables that can be used in the config files.
-      user = "matthias";
+      user = "wars";
       location = "$HOME/.setup";
     in                                                                      # Use above variables in ...
     {

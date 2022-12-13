@@ -18,7 +18,7 @@
       # Terminal
       pfetch
     ];
-    stateVersion = "22.05";
+    stateVersion = "22.11";
   };
 
   programs = {
@@ -60,7 +60,7 @@
         # File Tree
         nerdtree                                  # File Manager - set in extraConfig to F6
 
-        # Customization 
+        # Customization
         wombat256-vim                             # Color scheme for lightline
         srcery-vim                                # Color scheme for text
 
@@ -78,7 +78,7 @@
 
         highlight Comment cterm=italic gui=italic " Comments become italic
         hi Normal guibg=NONE ctermbg=NONE         " Remove background, better for personal theme
-        
+
         set number                                " Set numbers
 
         nmap <F6> :NERDTreeToggle<CR>             " F6 opens NERDTree

@@ -21,8 +21,8 @@
   };
 
   networking = {
-    computerName = "MacBook";             # Host name
-    hostName = "MacBook";
+    computerName = "MCat";             # Host name
+    hostName = "MCat";
   };
 
   fonts = {                               # Fonts
@@ -38,6 +38,7 @@
     ];
   };
 
+  nixpkgs.config.allowUnfree = true;
   environment = {
     shells = with pkgs; [ zsh ];          # Default shell
     variables = {                         # System variables
@@ -49,10 +50,22 @@
       git
       ranger
 
-      # Doom Emacs
-      emacs
-      fd
-      ripgrep
+      jdk11
+      openssl
+      openssh
+      # inetutils
+      iperf3
+      vim
+      git
+      tmux
+      tree
+      wget
+      pandoc
+      ffmpeg
+      maven
+      gradle
+      nodejs
+      minicom
     ];
   };
 
@@ -76,7 +89,6 @@
     ];
     casks = [
       "parsec"
-      "plex-media-player"
     ];
   };
 
@@ -93,6 +105,7 @@
     '';
   };
 
+  security.pam.enableSudoTouchIdAuth = true;
   system = {
     defaults = {
       NSGlobalDomain = {                  # Global macOS system settings
@@ -108,7 +121,7 @@
       };
       finder = {                          # Finder settings
         QuitMenuItem = false;             # I believe this probably will need to be true if using spacebar
-      };  
+      };
       trackpad = {                        # Trackpad settings
         Clicking = true;
         TrackpadRightClick = true;
