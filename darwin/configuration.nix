@@ -67,6 +67,7 @@
       gradle
       nodejs
       minicom
+      rustup
     ];
   };
 
