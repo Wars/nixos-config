@@ -1,5 +1,5 @@
 #
-# Doom Emacs: home-manager alternative in "home.nix". Personally not a fan of github:nix-community/nix-doom-emacs due to performance issues
+# Personal Emacs config. Can be set up with vanilla nixos or with home-manager (see comments at bottom)
 #
 # flake.nix
 #   ├─ ./hosts
@@ -11,24 +11,33 @@
 #
 
 
-{ config, pkgs, doom-emacs, ... }:
+{ config, pkgs, ... }:
 
 {
-  imports = [ doom-emacs.hmModule ];
-
   services.emacs = {
     enable = true;
-    #package = doom-emacs;
   };
 
-  programs.doom-emacs = {
-    enable = true;
-    doomPrivateDir = ./doom.d;
-  };
+  system.activationScripts = {
+    emacs.text = ''
+      CONFIG="$HOME/.emacs.d"
 
-  home.packages = with pkgs; [
-    ripgrep
-    coreutils
-    fd
-  ];                                             # Dependencies
+      if [ ! -d "$CONFIG" ]; then
+        git clone https://github.com/matthiasbenaets/emacs.d.git $CONFIG
+      fi
+    '';
+
+  };
 }
+
+#Home-manager
+  #programs.emacs = {
+  #  enable = true;
+  #}; # also keep services.emacs
+  #
+  #home = {
+  #  activation = {
+  #    emacs = ''
+  #    '';
+  #  };
+  #};

@@ -11,10 +11,11 @@
 #
 
 [
-   ./alacritty.nix
-   ./rofi.nix
-   #./waybar.nix
-   #./games.nix
+  ./alacritty.nix
+  ./rofi.nix
+  ./wofi.nix
+  #./waybar.nix
+  #./games.nix
 ]
 # Waybar.nix is pulled from modules/desktop/..
 # Games.nix is pulled from desktop/default.nix

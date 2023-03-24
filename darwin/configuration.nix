@@ -47,6 +47,7 @@
     };
     systemPackages = with pkgs; [         # Installed Nix packages
       # Terminal
+      ansible
       git
       ranger
 

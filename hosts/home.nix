@@ -5,8 +5,6 @@
 #   ├─ ./hosts
 #   │   └─ home.nix *
 #   └─ ./modules
-#       ├─ ./editors
-#       │   └─ default.nix
 #       ├─ ./programs
 #       │   └─ default.nix
 #       └─ ./services
@@ -17,7 +15,6 @@
 
 { 
   imports =                                   # Home Manager Modules
-    (import ../modules/editors) ++
     (import ../modules/programs) ++
     (import ../modules/services);
 
@@ -28,7 +25,7 @@
     packages = with pkgs; [
       # Terminal
       btop              # Resource Manager
-      pfetch            # Minimal fetch
+      nitch             # Minimal fetch
       ranger            # File Manager
       tldr              # Helper
 
@@ -47,12 +44,14 @@
       remmina           # XRDP & VNC Client
 
       # File Management
-      okular            # PDF Viewer
       gnome.file-roller # Archive Manager
+      okular            # PDF Viewer
       pcmanfm           # File Manager
-      rsync             # Syncer - $ ssync -r dir1/ dir2/
+      p7zip             # Zip Encryption
+      rsync             # Syncer - $ rsync -r dir1/ dir2/
       unzip             # Zip Files
       unrar             # Rar Files
+      zip               # Zip
 
       # General configuration
       #git              # Repositories
@@ -91,7 +90,6 @@
       # Wayland configuration
       #autotiling       # Tiling Script
       #grim             # Image Grabber
-      #mpvpaper         # Video Wallpaper
       #slurp            # Region Selector
       #swappy           # Screenshot Editor
       #swayidle         # Idle Management Daemon
@@ -101,7 +99,9 @@
       #xwayland         # X for Wayland
       #
       # Wayland home-manager
+      #mpvpaper         # Video Wallpaper
       #pamixer          # Pulse Audio Mixer
+      #swaybg           # Background
       #swaylock-fancy   # Screen Locker
       #waybar           # Bar
       #
@@ -125,6 +125,7 @@
       #sshpass          # Ansible dependency
       # 
       # Laptop
+      #cbatticon        # Battery Notifications
       #blueman          # Bluetooth
       #light            # Display Brightness
       #libreoffice      # Office Tools
@@ -136,10 +137,11 @@
     file.".config/wall".source = ../modules/themes/wall;
     file.".config/wall.mp4".source = ../modules/themes/wall.mp4;
     pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
-      #name = "Dracula-cursors";
-      name = "Catppuccin-Mocha-Dark-Cursors";
-      #package = pkgs.dracula-theme;
-      package = pkgs.catppuccin-cursors.mochaDark;
+      gtk.enable = true;
+      name = "Dracula-cursors";
+      #name = "Catppuccin-Mocha-Dark-Cursors";
+      package = pkgs.dracula-theme;
+      #package = pkgs.catppuccin-cursors.mochaDark;
       size = 16;
     };
     stateVersion = "22.05";
@@ -153,16 +155,28 @@
     enable = true;
     theme = {
       name = "Dracula";
-      #name = "Catppuccin-Dark";
+      #name = "Catppuccin-Mocha-Compact-Mauve-Dark";
       package = pkgs.dracula-theme;
-      #package = pkgs.catppuccin-gtk;
+      #package = pkgs.catppuccin-gtk.override {
+      #  accents = ["mauve"];
+      #  size = "compact";
+      #  variant = "mocha";
+      #};
     };
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
     };
     font = {
-      name = "JetBrains Mono Medium";         # or FiraCode Nerd Font Mono Medium
+      #name = "JetBrains Mono Medium";
+      name = "FiraCode Nerd Font Mono Medium";
     };                                        # Cursor is declared under home.pointerCursor
+  };
+
+  systemd.user.targets.tray = {               # Tray.target can not be found when xsession is not enabled. This fixes the issue.
+    Unit = {
+      Description = "Home Manager System Tray";
+      Requires = [ "graphical-session-pre.target" ];
+    };
   };
 }

@@ -11,44 +11,40 @@
       viAlias = true;
       vimAlias = true;
 
-      plugins = with pkgs.vimPlugins; [
+      configure = {
+        customRC = ''
+          syntax enable
+          colorscheme srcery
 
-        # Syntax
-        vim-nix
-        vim-markdown
+          let g:lightline = {
+            \ 'colorscheme': 'wombat',
+            \ }
 
-        # Quality of life
-        vim-lastplace         # Opens document where you left it
-        auto-pairs            # Print double quotes/brackets/etc
-        vim-gitgutter         # See uncommitted changes of file :GitGutterEnable
+          highlight Comment cterm=italic gui=italic
+          hi Normal guibg=NONE ctermbg=NONE
 
-        # File Tree
-        nerdtree              # File Manager - set in extraConfig to F6
+          set number
 
-        # Customization 
-        wombat256-vim         # Color scheme for lightline
-        srcery-vim            # Color scheme for text
+          nmap <F6> :NERDTreeToggle<CR>
+        '';
+        packages.myVimPackages = with pkgs.vimPlugins; {
+          start = [
+            vim-nix
+            vim-markdown
 
-        lightline-vim         # Info bar at bottom
-        indent-blankline-nvim # Indentation lines
-      ];
+            vim-lastplace
+            auto-pairs
+            vim-gitgutter
 
-      extraConfig = ''
-        syntax enable                             " Syntax highlighting
-        colorscheme srcery                        " Color scheme text
+            nerdtree
+            wombat256-vim
+            srcery-vim
 
-        let g:lightline = {
-          \ 'colorscheme': 'wombat',
-          \ }                                     " Color scheme lightline
-
-        highlight Comment cterm=italic gui=italic " Comments become italic
-        hi Normal guibg=NONE ctermbg=NONE         " Remove background, better for personal theme
-        
-        set number                                " Set numbers
-
-        nmap <F6> :NERDTreeToggle<CR>             " F6 opens NERDTree
-      '';
+            lightline-vim
+            indent-blankline-nvim
+           ];
+        };
+      };
     };
   };
 }
-

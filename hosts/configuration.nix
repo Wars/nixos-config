@@ -6,18 +6,17 @@
 #   │   └─ configuration.nix *
 #   └─ ./modules
 #       ├─ ./editors
-#       │   └─ ./emacs
-#       │      └─ native.nix
+#       │   └─ default.nix
 #       └─ ./shell
-#           └─ ./default.nix
+#           └─ default.nix
 #
 
-{ config, lib, pkgs, inputs, user, location, ... }:
+{ config, lib, pkgs, inputs, user, ... }:
 
 {
   imports =
-    [(import ../modules/editors/emacs/native.nix)] ++  # Native doom emacs instead of nix-community flake
-    ( import ../modules/shell );
+    (import ../modules/editors) ++          # Native doom emacs instead of nix-community flake
+    (import ../modules/shell);
 
   users.users.${user} = {                   # System User
     isNormalUser = true;
@@ -37,10 +36,11 @@
 
   console = {
     font = "Lat2-Terminus16";
-    keyMap = "us";	                        # or us/azerty/etc
+    keyMap = "us";                          # or us/azerty/etc
   };
 
   security.rtkit.enable = true;
+  security.polkit.enable = true;
   #sound = {                                # Deprecated due to pipewire
   #  enable = true;
   #  mediaKeys = {
@@ -157,4 +157,3 @@
     stateVersion = "22.05";
   };
 }
-

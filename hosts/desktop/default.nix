@@ -31,7 +31,7 @@
   boot = {                                      # Boot options
     kernelPackages = pkgs.linuxPackages_latest;
     #initrd.kernelModules = [ "amdgpu" ];       # Video drivers
-    
+
     loader = {                                  # For legacy boot:
       systemd-boot = {
         enable = true;
@@ -47,6 +47,15 @@
       enable = true;
       extraBackends = [ pkgs.sane-airscan ];
     };
+    opengl = {
+      enable = true;
+      extraPackages = with pkgs; [
+       #intel-media-driver
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
+    };
   };
 
   environment = {                               # Packages installed system wide
@@ -57,6 +66,9 @@
       x11vnc
       wacomtablet
     ];
+    variables = {
+      LIBVA_DRIVER_NAME = "i965";
+    };
   };
 
   services = {
@@ -78,8 +90,8 @@
     (self: super: {
       discord = super.discord.overrideAttrs (
         _: { src = builtins.fetchTarball {
-          url = "https://discord.com/api/download?platform=linux&format=tar.gz"; 
-          sha256 = "1kwqn1xr96kvrlbjd14m304g2finc5f5ljvnklg6fs5k4avrvmn4";
+          url = "https://discord.com/api/download?platform=linux&format=tar.gz";
+          sha256 = "1z980p3zmwmy29cdz2v8c36ywrybr7saw8n0w7wlb74m63zb9gpi";
         };}
       );
     })

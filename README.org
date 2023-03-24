@@ -5,46 +5,50 @@
 #+attr_org: :width 600
 [[file:rsc/Header.svg]]
 
-* Table of Content :toc:
+* Table of Content
+:PROPERTIES:
+:TOC:      :include all :depth 2 :force (depth) :ignore (this)
+:END:
+:CONTENTS:
 - [[#system-components][System Components]]
 - [[#nixos-installation-guide][NixOS Installation Guide]]
-  - [[#partitioning][Partitioning]]
-  - [[#installation][Installation]]
-  - [[#finalization][Finalization]]
 - [[#nix-installation-guide][Nix Installation Guide]]
-  - [[#installation-1][Installation]]
-  - [[#finalization-1][Finalization]]
 - [[#nix-darwin-installation-guide][Nix-Darwin Installation Guide]]
-  - [[#setup][Setup]]
-  - [[#installation-2][Installation]]
-  - [[#finalization-2][Finalization]]
+- [[#guides][Guides]]
 - [[#faq][FAQ]]
+:END:
 
 * System Components
-|                 | *NixOS - Wayland* | *NixOS - Xorg*    | *Darwin*          |
-|-----------------+-------------------+-------------------+-------------------|
-| *Shell*         | Zsh               | Zsh               | Zsh               |
-| *DM*            | TTY1 Login        | LightDM           | /                 |
-| *WM*            | Hyprland          | Bspwm             | Yabai             |
-| *Compositor*    | Hyprland          | Picom (jonaburg)  | /                 |
-| *Bar*           | Waybar            | Polybar           | /                 |
-| *Hotkeys*       | Hyprland          | Sxhkd             | Skhd              |
-| *Launcher*      | Rofi              | Rofi              | /                 |
-| *GTK Theme*     | Dracula           | Dracula           | /                 |
-| *Notifications* | Dunst             | Dunst             | /                 |
-| *Terminal*      | Alacritty         | Alacritty         | Alacritty         |
-| *Editor*        | Nvim + Doom Emacs | Nvim + Doom Emacs | Nvim + Doom Emacs |
-| *Used by host*  | Desktop           | Laptop & VM       | Macbook           |
-There are some other desktop environments/window manager. Just link to correct default/home.nix in ~./hosts/<host>/default.nix~.
+|                 | *NixOS -Wayland* | *NixOS - Wayland/Xorg* | *NixOS - Xorg*   | *Darwin*  |
+|-----------------+------------------+------------------------+------------------+-----------|
+| *DM*            | TTY1 Login       | GDM                    | LightDM          | /         |
+| *WM/DE*         | Hyprland         | Gnome                  | Bspwm            | Yabai     |
+| *Compositor*    | Hyprland         | Mutter                 | Picom (jonaburg) | /         |
+| *Bar*           | Waybar           | Dock-to-Panel          | Polybar          | /         |
+| *Hotkeys*       | Hyprland         | /                      | Sxhkd            | Skhd      |
+| *Launcher*      | Wofi             | Gnome                  | Rofi             | /         |
+| *GTK Theme*     | Dracula          | Dracula / Adwaita      | Dracula          | /         |
+| *Notifications* | Dunst            | Gnome                  | Dunst            | /         |
+| *Terminal*      | Alacritty        | Alacritty              | Alacritty        | Alacritty |
+| *Used by host*  | Desktop          | Work                   | Laptop & VM      | Macbook   |
+
+There are some other desktop environments/window manager (See NixOS - Other). Just link to correct ~default/home.nix~ in ~./hosts/<host>/default and home.nix~.
 There is also a general Nix config with hostname ~pacman~ that can be used on pretty much any disto.
 
+Compontents relevant to all hosts:
+| *Shell*    | Zsh               |
+| *Terminal* | Alacritty         |
+| *Editors*  | Nvim + Doom Emacs |
+
 * NixOS Installation Guide
-This flake currently has *3* hosts
+This flake currently has *4* hosts
  1. desktop
     - UEFI boot w/ systemd-boot
  2. laptop
     - UEFI boot w/ grub (Dual Boot)
- 3. vm
+ 3. work
+    - UEFI boot w/ grub (Dual Boot)
+ 4. vm
     - Legacy boot w/ grub
 
 Flakes can be build with:
@@ -147,9 +151,9 @@ This will depend on the host chosen.
 3. Change username in flake.nix
 4. Set a ~users.users.${user}.initialPassword = ...~
    - Not really recommended. It's maybe better to follow last steps
-5. If you are planning on using the native.nix doom emacs, don't forget to rebuild after the initial installation when you link to this nix file.
-   - This is because userActivationScript is used for the setup and some locations are partially hardcoded
-   - It will automatically install if ~~/.emacs.d~ does not exist
+5. If you are planning on using the doom-emacs alternative home.nix, don't forget to rebuild after the initial installation when you link to this nix file.
+   - This is because userActivationScript is used for this setup and this will time out during the rebuild.
+   - It will automatically install if ~$HOME/.emacs.d~ does not exist
      - If this dir already exist, move or delete it.
 
 *** Install
@@ -167,7 +171,7 @@ This will depend on the host chosen.
 
 ** Finalization
 1. Set a root password after installation is done
-2. Reboot without livecd
+2. Reboot without liveCD
 3. Login
    1. If initialPassword is not set use TTY:
       - ~Ctrl - Alt - F1~
@@ -181,8 +185,8 @@ This will depend on the host chosen.
    - ~$ sudo rm /etc/nixos/configuration.nix~ - This is done because in the past it would auto update this config if you would have auto update in your configuration.
    - or just clone flake again do apply same changes.
 5. Dual boot:
-   - OSProber probably did not find your Windows partion after the first install
-   - There is a high likelyhood it will find it after:
+   - OSProber probably did not find your Windows partition after the first install
+   - There is a high likelihood it will find it after:
      - ~$ sudo nixos-rebuild switch --flake <config path>#<host>~
 6. Rebuilds:
    - ~$ sudo nixos-rebuild switch --flake <config path>#<host>~
@@ -222,7 +226,7 @@ This will rebuild the configuration and automatically activate it.
 *Mostly optional or already correct by default*
 1. NixGL gets set up by default, so if you are planning on using GUI applications that use OpenGL or Vulkan:
    - ~$ nixGLIntel <package>~
-   - or add it to your aliasses file
+   - or add it to your aliases file
 2. Every rebuild, and activation-script will run to add applications to the system menu.
    - it's pretty much the same as adding the path to XDG_DATA_DIRS
    - if you do not want to or if the locations are different, change this.
@@ -275,6 +279,13 @@ This will rebuild the configuration and automatically activate it.
    - ~Terminal/iTerm > Secure Keyboard Entry~
 3. Install XCode to get complete development environment.
    - ~$ xcode-select --install~
+
+* Guides
+- [[./nixos.org][NixOS general guide]]
+- [[./nix.org][Nix on other Linux distributions]]
+- [[./darwin.org][Nix on MacOS with Nix-Darwin]]
+- [[./contrib.org][Contribution to nixpkgs]]
+- [[./shell.org][Using nix shells]]
 
 * FAQ
 - What is NixOS?

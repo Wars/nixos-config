@@ -5,7 +5,14 @@
 { config, lib, pkgs, ... }:
 
 {
-  programs.dconf.enable = true;
+  programs = {
+    zsh.enable = true;
+    dconf.enable = true;
+    kdeconnect = {                                # For GSConnect
+      enable = true;
+      package = pkgs.gnomeExtensions.gsconnect;
+    };
+  };
 
   services = {
     xserver = {
@@ -17,31 +24,21 @@
       modules = [ pkgs.xf86_input_wacom ];        # Both needed for wacom tablet usage
       wacom.enable = true;
 
-      displayManager = {                          # Display Manager
-        gdm = {
-          enable = true;
-        };
-      };
-      desktopManager= {
-        gnome = {                                 # Window Manager
-          enable = true;
-        };
-      };
+      displayManager.gdm.enable = true;           # Display Manager
+      desktopManager.gnome.enable = true;         # Window Manager
     };
     udev.packages = with pkgs; [
       gnome.gnome-settings-daemon
     ];
   };
 
-  programs.zsh.enable = true;                     # Weirdly needs to be added to have default user on lightdm
-
   hardware.pulseaudio.enable = false;
 
   environment = {
     systemPackages = with pkgs; [                 # Packages installed
+      gnome.dconf-editor
+      gnome.gnome-tweaks
       gnome.adwaita-icon-theme
-      gnomeExtensions.appindicator
-      gnomeExtensions.pop-shell
     ];
     gnome.excludePackages = (with pkgs; [         # Gnome ignored packages
       gnome-tour
@@ -49,11 +46,14 @@
       gedit
       epiphany
       geary
-      evince
+      gnome-characters
       tali
       iagno
       hitori
       atomix
+      yelp
+      gnome-contacts
+      gnome-initial-setup
     ]);
   };
 }

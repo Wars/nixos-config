@@ -6,12 +6,12 @@
 #       ├─ default.nix *
 #       ├─ configuration.nix
 #       ├─ home.nix
-#       └─ ./desktop OR ./laptop OR ./vm
+#       └─ ./desktop OR ./laptop OR ./work OR ./vm
 #            ├─ ./default.nix
 #            └─ ./home.nix 
 #
 
-{ lib, inputs, nixpkgs, home-manager, nur, user, location, doom-emacs, hyprland, ... }:
+{ lib, inputs, nixpkgs, home-manager, nur, user, location, doom-emacs, hyprland, plasma-manager, ... }:
 
 let
   system = "x86_64-linux";                                  # System architecture
@@ -27,7 +27,7 @@ in
   desktop = lib.nixosSystem {                               # Desktop profile
     inherit system;
     specialArgs = {
-      inherit inputs user location;
+      inherit inputs user location hyprland system;
       host = {
         hostName = "desktop";
         mainMonitor = "HDMI-A-3";
@@ -52,7 +52,10 @@ in
           };
         };                                                  # Pass flake variable
         home-manager.users.${user} = {
-          imports = [(import ./home.nix)] ++ [(import ./desktop/home.nix)];
+          imports = [
+            ./home.nix
+            ./desktop/home.nix
+          ];
         };
       }
     ];
@@ -61,9 +64,9 @@ in
   laptop = lib.nixosSystem {                                # Laptop profile
     inherit system;
     specialArgs = {
-      inherit inputs user location hyprland;
+      inherit inputs user location;
       host = {
-        hostName = "desktop";
+        hostName = "laptop";
         mainMonitor = "eDP-1";
       };
     };
@@ -78,12 +81,45 @@ in
         home-manager.extraSpecialArgs = {
           inherit user;
           host = {
-            hostName = "desktop";
+            hostName = "laptop";
             mainMonitor = "eDP-1";
           };
         };
         home-manager.users.${user} = {
           imports = [(import ./home.nix)] ++ [(import ./laptop/home.nix)];
+        };
+      }
+    ];
+  };
+
+  work = lib.nixosSystem {                                  # Work profile
+    inherit system;
+    specialArgs = {
+      inherit inputs user location;
+      host = {
+        hostName = "work";
+        mainMonitor = "eDP-1";
+        secondMonitor = "HDMI-A-2";
+      };
+    };
+    modules = [
+      hyprland.nixosModules.default
+      ./work
+      ./configuration.nix
+
+      home-manager.nixosModules.home-manager {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.extraSpecialArgs = {
+          inherit user;
+          host = {
+            hostName = "work";
+            mainMonitor = "eDP-1";
+            secondMonitor = "HDMI-A-2";
+          };
+        };
+        home-manager.users.${user} = {
+          imports = [(import ./home.nix)] ++ [(import ./work/home.nix)];
         };
       }
     ];
