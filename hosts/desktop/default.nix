@@ -24,13 +24,15 @@
   imports =                                               # For now, if applying to other system, swap files
     [(import ./hardware-configuration.nix)] ++            # Current system hardware config @ /etc/nixos/hardware-configuration.nix
     [(import ../../modules/programs/games.nix)] ++        # Gaming
+    [(import ../../modules/programs/flatpak.nix)] ++        # Gaming
     [(import ../../modules/desktop/hyprland/default.nix)] ++ # Window Manager
+    [(import ../../modules/hardware/dslr.nix)] ++         # Temp Fix DSLR Webcam
     (import ../../modules/desktop/virtualisation) ++      # Virtual Machines & VNC
     (import ../../modules/hardware);                      # Hardware devices
 
   boot = {                                      # Boot options
     kernelPackages = pkgs.linuxPackages_latest;
-    #initrd.kernelModules = [ "amdgpu" ];       # Video drivers
+    initrd.kernelModules = [ "amdgpu" ];        # Video drivers
 
     loader = {                                  # For legacy boot:
       systemd-boot = {
@@ -50,11 +52,17 @@
     opengl = {
       enable = true;
       extraPackages = with pkgs; [
-       #intel-media-driver
-        vaapiIntel
-        vaapiVdpau
-        libvdpau-va-gl
+        #intel-media-driver                     # iGPU
+        #vaapiIntel
+      #  rocm-opencl-icd                         # AMD
+      #  rocm-opencl-runtime
+      amdvlk
       ];
+      extraPackages32 = with pkgs; [
+        driversi686Linux.amdvlk
+      ];
+      driSupport = true;
+      driSupport32Bit = true;
     };
   };
 
@@ -65,10 +73,11 @@
       simple-scan
       x11vnc
       wacomtablet
+      clinfo
     ];
-    variables = {
-      LIBVA_DRIVER_NAME = "i965";
-    };
+    #variables = {
+    #  LIBVA_DRIVER_NAME = "i965";
+    #};
   };
 
   services = {

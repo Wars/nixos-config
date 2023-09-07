@@ -11,7 +11,7 @@
 #               └─ home.nix *
 #
 
-{ config, lib, pkgs, host, ... }:
+{ config, lib, pkgs, unstable, host, ... }:
 
 let
   touchpad = with host;
@@ -32,37 +32,40 @@ let
       }
     '' else "";
   workspaces = with host;
-    if hostName == "desktop" then ''
+    if hostName == "desktop" || hostName == "beelink" then ''
       monitor=${toString mainMonitor},1920x1080@60,1920x0,1
       monitor=${toString secondMonitor},1920x1080@60,0x0,1
     '' else if hostName == "work" then ''
       monitor=${toString mainMonitor},1920x1080@60,0x0,1
-      monitor=${toString secondMonitor},1920x1080@60,1920x0,1
+      monitor=${toString secondMonitor},1920x1200@60,1920x0,1
+      monitor=${toString thirdMonitor},1920x1200@60,3840x0,1
     '' else ''
       monitor=${toString mainMonitor},1920x1080@60,0x0,1
     '';
   monitors = with host;
-    if hostName == "desktop" || hostName == "work" then ''
+    if hostName == "desktop" || hostName == "beelink" then ''
       workspace=${toString mainMonitor},1
+      workspace=${toString mainMonitor},2
+      workspace=${toString mainMonitor},3
+      workspace=${toString mainMonitor},4
+      workspace=${toString secondMonitor},5
       workspace=${toString secondMonitor},6
+      workspace=${toString secondMonitor},7
+      workspace=${toString secondMonitor},8
+    '' else if hostName == "work" then ''
+      workspace=${toString mainMonitor},1
+      workspace=${toString mainMonitor},2
+      workspace=${toString mainMonitor},3
+      workspace=${toString secondMonitor},4
+      workspace=${toString secondMonitor},5
+      workspace=${toString secondMonitor},6
+      workspace=${toString thirdMonitor},7
 
-      wsbind=1,${toString mainMonitor}
-      wsbind=2,${toString mainMonitor}
-      wsbind=3,${toString mainMonitor}
-      wsbind=4,${toString mainMonitor}
-      wsbind=5,${toString mainMonitor}
-      wsbind=6,${toString secondMonitor}
-      wsbind=7,${toString secondMonitor}
-      wsbind=8,${toString secondMonitor}
-      wsbind=9,${toString secondMonitor}
-      wsbind=10,${toString secondMonitor}
+      bindl=,switch:Lid Switch,exec,$HOME/.config/hypr/script/clamshell.sh
     '' else "";
   execute = with host;
-    if hostName == "desktop" then ''
-      #exec-once=${pkgs.mpvpaper}/bin/mpvpaper -sf -v -o "--loop --panscan=1" '*' $HOME/.config/wall.mp4  # Moving wallpaper (small performance hit)
-      exec-once=${pkgs.swaybg}/bin/swaybg -m center -i $HOME/.config/wall
+    if hostName == "desktop" || hostName == "beelink" then ''
     '' else if hostName == "work" then ''
-      exec-once=${pkgs.swaybg}/bin/swaybg -m center -i $HOME/.config/wall
       exec-once=${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
       #exec-once=${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse /GDrive
       exec-once=${pkgs.rclone}/bin/rclone mount --daemon gdrive: /GDrive
@@ -72,6 +75,7 @@ let
   hyprlandConf = with host; ''
     ${workspaces}
     ${monitors}
+    monitor=,highres,auto,auto
 
     general {
       #main_mod=SUPER
@@ -89,7 +93,9 @@ let
       active_opacity=0.93
       inactive_opacity=0.93
       fullscreen_opacity=1
-      blur=true
+      blur {
+        enabled=true
+      }
       drop_shadow=false
     }
 
@@ -104,7 +110,7 @@ let
 
     input {
       kb_layout=us
-      kb_options=caps:ctrl_modifier
+      #kb_options=caps:ctrl_modifier
       follow_mouse=2
       repeat_delay=250
       numlock_by_default=1
@@ -120,6 +126,11 @@ let
       force_split=2
     }
 
+    misc {
+      disable_hyprland_logo=true
+      disable_splash_rendering=true
+    }
+
     debug {
       damage_tracking=2
     }
@@ -131,10 +142,10 @@ let
     bind=SUPER,Q,killactive,
     bind=SUPER,Escape,exit,
     bind=SUPER,L,exec,${pkgs.swaylock}/bin/swaylock
-    bind=SUPER,E,exec,${pkgs.pcmanfm}/bin/pcmanfm
+    bind=SUPER,E,exec,${pkgs.xfce.thunar}/bin/thunar
     bind=SUPER,H,togglefloating,
     #bind=SUPER,Space,exec,${pkgs.rofi}/bin/rofi -show drun
-    bind=SUPER,Space,exec,${pkgs.wofi}/bin/wofi --show drun
+    bind=SUPER,Space,exec, pkill wofi || ${pkgs.wofi}/bin/wofi --show drun
     bind=SUPER,P,pseudo,
     bind=SUPER,F,fullscreen,
     bind=SUPER,R,forcerendererreload
@@ -187,6 +198,7 @@ let
     bind=,XF86AudioLowerVolume,exec,${pkgs.pamixer}/bin/pamixer -d 10
     bind=,XF86AudioRaiseVolume,exec,${pkgs.pamixer}/bin/pamixer -i 10
     bind=,XF86AudioMute,exec,${pkgs.pamixer}/bin/pamixer -t
+    bind=SUPER_L,c,exec,${pkgs.pamixer}/bin/pamixer --default-source -t
     bind=,XF86AudioMicMute,exec,${pkgs.pamixer}/bin/pamixer --default-source -t
     bind=,XF86MonBrightnessDown,exec,${pkgs.light}/bin/light -U 10
     bind=,XF86MonBrightnessUP,exec,${pkgs.light}/bin/light -A 10
@@ -199,7 +211,9 @@ let
     windowrule=size 24% 24% ,title:^(Picture-in-Picture)$
 
     exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec-once=${pkgs.waybar}/bin/waybar
+    exec-once=${unstable.waybar}/bin/waybar
+    exec-once=${unstable.eww-wayland}/bin/eww daemon
+    #exec-once=$HOME/.config/eww/scripts/eww        # When running eww as a bar
     exec-once=${pkgs.blueman}/bin/blueman-applet
     ${execute}
   '';
@@ -240,10 +254,30 @@ in
       { event = "lock"; command = "lock"; }
     ];
     timeouts = [
-      { timeout= 300; command = "${pkgs.swaylock}/bin/swaylock -f";}
+      { timeout = 300; command = "${pkgs.swaylock}/bin/swaylock -f"; }
     ];
-    systemdTarget = "xdg-desktop-portal-hyprland.service";
+    systemdTarget = "hyprland-session.target";
   } else {
     enable = false;
+  };
+
+  home.file = {
+    ".config/hypr/script/clamshell.sh" = {
+      text = ''
+        #!/bin/sh
+
+        if grep open /proc/acpi/button/lid/LID/state; then
+          hyprctl keyword monitor "eDP-1, 1920x1080, 0x0, 1"
+        else
+          if [[ `hyprctl monitors | grep "Monitor" | wc -l` != 1 ]]; then
+            hyprctl keyword monitor "eDP-1, disable"
+          else
+            ${pkgs.swaylock}/bin/swaylock -f
+            systemctl sleep
+          fi
+        fi
+      '';
+      executable = true;
+    };
   };
 }

@@ -41,12 +41,6 @@
 
   security.rtkit.enable = true;
   security.polkit.enable = true;
-  #sound = {                                # Deprecated due to pipewire
-  #  enable = true;
-  #  mediaKeys = {
-  #    enable = true;
-  #  };
-  #};
 
   fonts.fonts = with pkgs; [                # Fonts
     carlito                                 # NixOS
@@ -69,17 +63,32 @@
       VISUAL = "nvim";
     };
     systemPackages = with pkgs; [           # Default packages installed system-wide
-      #vim
-      #git
+      alsa-utils
+      jq
       killall
       nano
       pciutils
+      pulseaudio
+      ripgrep
+      socat
       usbutils
       wget
     ];
   };
 
+  programs = {
+    thunar = {
+      enable = true;
+      plugins = with pkgs.xfce; [
+        thunar-archive-plugin
+        thunar-volman
+        thunar-media-tags-plugin
+      ];
+    };
+  };
+
   services = {
+    tumbler.enable = true;
     printing = {                                # Printing and drivers for TS5300
       enable = true;
       #drivers = [ pkgs.cnijfilter2 ];          # There is the possibility cups will complain about missing cmdtocanonij3. I guess this is just an error that can be ignored for now. Also no longer need required since server uses ipp to share printer over network.
@@ -150,10 +159,10 @@
   nixpkgs.config.allowUnfree = true;        # Allow proprietary software.
 
   system = {                                # NixOS settings
-    autoUpgrade = {                         # Allow auto update (not useful in flakes)
-      enable = true;
-      channel = "https://nixos.org/channels/nixos-unstable";
-    };
+    #autoUpgrade = {                         # Allow auto update (not useful in flakes)
+    #  enable = true;
+    #  channel = "https://nixos.org/channels/nixos-unstable";
+    #};
     stateVersion = "22.05";
   };
 }

@@ -42,12 +42,12 @@
   #    options = [ "nofail" ];
   #  };
 
-  fileSystems."/hdd" =
-    { #device = "/dev/disk/by-uuid/bbab0f8a-50f4-4a7c-a0d3-0ccb036f11d5";
-      device = "/dev/disk/by-label/hdd";
-      fsType = "ext4";
-      options = [ "nofail" ];
-    };
+  #fileSystems."/hdd" =
+  #  { #device = "/dev/disk/by-uuid/bbab0f8a-50f4-4a7c-a0d3-0ccb036f11d5";
+  #    device = "/dev/disk/by-label/hdd";
+  #    fsType = "ext4";
+  #    options = [ "nofail" ];
+  #  };
 
   fileSystems."/mnt/toshiba1" =
     { #device = "/dev/disk/by-uuid/7491ea96-a62d-4202-ada7-8d0310dfc967";
@@ -111,18 +111,18 @@
     enableIPv6 = false;
     bridges = {                                 # Bridge so interface can be used with virtual machines
       "br0" = {
-        interfaces = [ "enp2s0" ];
+        interfaces = [ "enp3s0" ];              # enp2s0 without 16x PCI-e populated
       };
     };
     interfaces = {
-      # enp2s0 = {                                # Change to correct network driver
-      #   #useDHCP = true;                         # Disabled because fixed ip
-      #   ipv4.addresses = [ {                    # Ip settings: *.0.50 for main machine
+      # enp2s0 = {                              # Change to correct network driver
+      #   #useDHCP = true;                      # Disabled because fixed ip
+      #   ipv4.addresses = [ {                  # Ip settings: *.0.50 for main machine
       #     address = "192.168.0.50";
       #     prefixLength = 24;
       #   } ];
       # };
-      # wlp1s0.useDHCP = true;                   # Wireless card
+      # wlp1s0.useDHCP = true;                  # Wireless card
       br0.ipv4.addresses = [{
         address = "192.168.0.50";
         prefixLength = 24;
