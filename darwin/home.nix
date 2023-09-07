@@ -25,7 +25,9 @@
     zsh = {                                       # Post installation script is run in configuration.nix to make it default shell
       enable = true;
       enableAutosuggestions = true;               # Auto suggest options and highlights syntax. It searches in history for options
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting = {
+        enable = true;
+      };
       history.size = 10000;
 
       oh-my-zsh = {                               # Extra plugins for zsh

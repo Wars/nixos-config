@@ -50,11 +50,13 @@
       ansible
       git
       ranger
+      android-tools
+      scrcpy
 
       jdk11
       openssl
       openssh
-      # inetutils
+      inetutils
       iperf3
       vim
       git
