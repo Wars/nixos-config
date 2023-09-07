@@ -10,10 +10,10 @@
 { config, pkgs, user, ... }:
 
 {
-  #imports = [
+  imports = [
   #  ./modules/yabai.nix
   #  ./modules/skhd.nix
-  #];
+  ];
 
   users.users."${user}" = {               # macOS user
     home = "/Users/${user}";
@@ -50,11 +50,13 @@
       ansible
       git
       ranger
+      android-tools
+      scrcpy
 
       jdk11
       openssl
       openssh
-      # inetutils
+      inetutils
       iperf3
       vim
       git
