@@ -11,7 +11,7 @@
 #           └─ default.nix
 #
 
-{ config, lib, pkgs, user, ... }:
+{ config, lib, pkgs, unstable, user, ... }:
 
 { 
   imports =                                   # Home Manager Modules
@@ -25,7 +25,6 @@
     packages = with pkgs; [
       # Terminal
       btop              # Resource Manager
-      nitch             # Minimal fetch
       ranger            # File Manager
       tldr              # Helper
 
@@ -33,7 +32,7 @@
       feh               # Image Viewer
       mpv               # Media Player
       pavucontrol       # Audio Control
-      plex-media-player # Media Player
+      #plex-media-player # Media Player
       vlc               # Media Player
       stremio           # Media Streamer
 
@@ -46,7 +45,6 @@
       # File Management
       gnome.file-roller # Archive Manager
       okular            # PDF Viewer
-      pcmanfm           # File Manager
       p7zip             # Zip Encryption
       rsync             # Syncer - $ rsync -r dir1/ dir2/
       unzip             # Zip Files
@@ -54,14 +52,19 @@
       zip               # Zip
 
       # General configuration
+      #alsa-utils	# Audio Commands
       #git              # Repositories
+      #jq		# JSON processor
       #killall          # Stop Applications
       #nano             # Text Editor
       #pciutils         # Computer Utility Info
       #pipewire         # Sound
+      #pulseaudio	# Audio Commands
       #usbutils         # USB Utility Info
       #wacomtablet      # Wacom Tablet
       #wget             # Downloader
+      #socat		# Data Transfer
+      #thunar           # File Manager
       #zsh              # Shell
       #
       # General home-manager
@@ -89,21 +92,20 @@
       #
       # Wayland configuration
       #autotiling       # Tiling Script
+      #eww-wayland	# Bar
       #grim             # Image Grabber
       #slurp            # Region Selector
       #swappy           # Screenshot Editor
       #swayidle         # Idle Management Daemon
+      #waybar           # Bar
       #wev              # Input Viewer
       #wl-clipboard     # Console Clipboard
       #wlr-randr        # Screen Settings
       #xwayland         # X for Wayland
       #
       # Wayland home-manager
-      #mpvpaper         # Video Wallpaper
       #pamixer          # Pulse Audio Mixer
-      #swaybg           # Background
       #swaylock-fancy   # Screen Locker
-      #waybar           # Bar
       #
       # Desktop
       #ansible          # Automation
@@ -118,6 +120,7 @@
       #hugo             # Static Website Builder
       #lutris           # Game Launcher
       #mkvtoolnix       # Matroska Tool
+      #nvtop            # Videocard Top
       #plex-media-player# Media Player
       #prismlauncher    # MC Launcher
       #steam            # Games
@@ -138,10 +141,10 @@
     file.".config/wall.mp4".source = ../modules/themes/wall.mp4;
     pointerCursor = {                         # This will set cursor system-wide so applications can not choose their own
       gtk.enable = true;
-      name = "Dracula-cursors";
-      #name = "Catppuccin-Mocha-Dark-Cursors";
-      package = pkgs.dracula-theme;
-      #package = pkgs.catppuccin-cursors.mochaDark;
+      #name = "Dracula-cursors";
+      name = "Catppuccin-Mocha-Dark-Cursors";
+      #package = pkgs.dracula-theme;
+      package = pkgs.catppuccin-cursors.mochaDark;
       size = 16;
     };
     stateVersion = "22.05";
@@ -154,14 +157,14 @@
   gtk = {                                     # Theming
     enable = true;
     theme = {
-      name = "Dracula";
-      #name = "Catppuccin-Mocha-Compact-Mauve-Dark";
-      package = pkgs.dracula-theme;
-      #package = pkgs.catppuccin-gtk.override {
-      #  accents = ["mauve"];
-      #  size = "compact";
-      #  variant = "mocha";
-      #};
+      #name = "Dracula";
+      name = "Catppuccin-Mocha-Compact-Blue-Dark";
+      #package = pkgs.dracula-theme;
+      package = pkgs.catppuccin-gtk.override {
+        accents = ["blue"];
+        size = "compact";
+        variant = "mocha";
+      };
     };
     iconTheme = {
       name = "Papirus-Dark";
