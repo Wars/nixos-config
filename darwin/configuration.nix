@@ -70,6 +70,7 @@
       nodejs
       minicom
       rustup
+      ruby
     ];
   };
 
