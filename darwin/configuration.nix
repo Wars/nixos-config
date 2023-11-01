@@ -67,7 +67,7 @@
       ffmpeg
       maven
       gradle
-      nodejs
+      nodejs_20
       minicom
       rustup
       ruby
