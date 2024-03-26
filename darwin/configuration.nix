@@ -71,6 +71,17 @@
       minicom
       rustup
       ruby
+      nginx
+      btop
+      dos2unix
+      mtr
+      libnfc
+      mitmproxy
+      apktool
+      alt-tab-macos
+      asitop
+      tesseract
+      watch
     ];
   };
 
@@ -91,8 +102,11 @@
     };
     brews = [
       "wireguard-tools"
+      "pidof"
+      "ghostscript"
     ];
     casks = [
+      "capslocknodelay"
     ];
   };
 

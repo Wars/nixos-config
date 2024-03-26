@@ -18,7 +18,7 @@
       # Terminal
       pfetch
     ];
-    stateVersion = "23.05";
+    stateVersion = "23.11";
   };
 
   programs = {
@@ -35,7 +35,7 @@
         custom = "$HOME/.config/zsh_nix/custom";
       };
 
-      initExtra = "source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup";
+      #initExtra = "source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup";
     };
     neovim = {
       enable = true;

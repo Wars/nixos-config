@@ -19,12 +19,12 @@
 
   inputs =                                                                  # All flake references used to build my NixOS setup. These are dependencies.
     {
-      nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";                     # Default Stable Nix Packages
+      nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";                     # Default Stable Nix Packages
       nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";         # Unstable Nix Packages
       dslr.url = "github:nixos/nixpkgs/nixos-22.11";                        # Quick fix
 
       home-manager = {                                                      # User Package Management
-        url = "github:nix-community/home-manager/release-23.05";
+        url = "github:nix-community/home-manager/release-23.11";
         inputs.nixpkgs.follows = "nixpkgs";
       };
 
