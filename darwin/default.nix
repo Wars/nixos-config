@@ -3,28 +3,34 @@
 #
 #  flake.nix
 #   └─ ./darwin
-#       ├─ ./default.nix *
-#       ├─ configuration.nix
-#       └─ home.nix
+#       ├─ default.nix *
+#       └─ <host>.nix
 #
 
-{ lib, inputs, nixpkgs, home-manager, darwin, user, ...}:
+{ inputs, nixpkgs-unstable, darwin, home-manager-unstable, nixvim-unstable, vars, ... }:
 
 let
   system = "aarch64-darwin";                                 # System architecture
+  pkgs = import nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
 in
 {
-  mcat = darwin.lib.darwinSystem {                       # MacBook8,1 "Core M" 1.2 12" (2015) A1534 ECM2746 profile
+  # MacBook
+  mcat = darwin.lib.darwinSystem {
     inherit system;
-    specialArgs = { inherit user inputs; };
-    modules = [                                             # Modules that are used
-      ./configuration.nix
+    specialArgs = { inherit inputs pkgs vars; };
+    modules = [
+      nixvim-unstable.nixDarwinModules.nixvim
+      ./mcat.nix
+      ../modules/editors/nvim.nix
+      ../modules/programs/kitty.nix
 
-      home-manager.darwinModules.home-manager {             # Home-Manager module that is used
+      home-manager-unstable.darwinModules.home-manager
+      {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = { inherit user; };  # Pass flake variable
-        home-manager.users.${user} = import ./home.nix;
       }
     ];
   };
