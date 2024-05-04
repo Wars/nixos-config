@@ -7,7 +7,7 @@
 #       └─ <host>.nix
 #
 
-{ inputs, nixpkgs-unstable, darwin, home-manager-unstable, nixvim-unstable, vars, ... }:
+{ inputs, nixpkgs-unstable, darwin, home-manager-unstable, vars, ... }:
 
 let
   system = "aarch64-darwin";                                 # System architecture
@@ -22,9 +22,7 @@ in
     inherit system;
     specialArgs = { inherit inputs pkgs vars; };
     modules = [
-      nixvim-unstable.nixDarwinModules.nixvim
       ./mcat.nix
-      ../modules/editors/nvim.nix
       ../modules/programs/kitty.nix
 
       home-manager-unstable.darwinModules.home-manager

@@ -34,35 +34,23 @@
         url = "github:lnl7/nix-darwin/master";
         inputs.nixpkgs.follows = "nixpkgs-unstable";
       };
-
-      # Neovim
-      nixvim = {
-        url = "github:nix-community/nixvim/nixos-23.11";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
-
-      # Neovim
-      nixvim-unstable = {
-        url = "github:nix-community/nixvim";
-        inputs.nixpkgs.follows = "nixpkgs-unstable";
-      };
     };
 
-  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, home-manager-unstable, darwin, nixvim, nixvim-unstable, ... }: # Function telling flake which inputs to use
+  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, home-manager-unstable, darwin, ... }: # Function telling flake which inputs to use
     let
       # Variables Used In Flake
       vars = {                                                           # Variables Used In Flake
         user = "wars";
         location = "$HOME/.setup";
         terminal = "kitty";
-        editor = "nvim";
+        editor = "vim";
       };
     in
     {
       darwinConfigurations = (
         import ./darwin {
           inherit (nixpkgs) lib;
-          inherit inputs nixpkgs-unstable home-manager-unstable darwin nixvim-unstable vars;
+          inherit inputs nixpkgs-unstable home-manager-unstable darwin vars;
         }
       );
     };
