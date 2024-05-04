@@ -27,7 +27,6 @@ in
       enable = true;
       lists = {
         WORDLIST = [
-          "${pkgs.scowl}/share/dict/words.txt"
           (builtins.toFile "dutch" dutch)
         ];
       };
