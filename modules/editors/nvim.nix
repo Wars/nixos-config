@@ -23,14 +23,6 @@ in
       ripgrep
       zig
     ];
-    wordlist = {
-      enable = true;
-      lists = {
-        WORDLIST = [
-          (builtins.toFile "dutch" dutch)
-        ];
-      };
-    };
   };
   programs.nixvim = {
     enable = true;
