@@ -34,9 +34,21 @@
         url = "github:lnl7/nix-darwin/master";
         inputs.nixpkgs.follows = "nixpkgs-unstable";
       };
+
+      # Neovim
+      nixvim = {
+        url = "github:nix-community/nixvim/nixos-23.11";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      # Neovim
+      nixvim-unstable = {
+        url = "github:nix-community/nixvim";
+        inputs.nixpkgs.follows = "nixpkgs-unstable";
+      };
     };
 
-  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, home-manager-unstable, darwin, nur, nixgl, nixvim, nixvim-unstable, doom-emacs, hyprland, hyprlock, hypridle, plasma-manager, ... }: # Function telling flake which inputs to use
+  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, home-manager-unstable, darwin, nixvim, nixvim-unstable, ... }: # Function telling flake which inputs to use
     let
       # Variables Used In Flake
       vars = {                                                           # Variables Used In Flake
